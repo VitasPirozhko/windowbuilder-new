@@ -1,17 +1,51 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+// подгрузим стили асинхронно
+//import('font-awesome/css/font-awesome.min.css');
+import './styles/roboto/font.css';
+import './styles/root.css';
+
+import React from "react";
+import PropTypes from 'prop-types';
+import {render} from 'react-dom';
+
+
+import {Provider} from 'react-redux';
+import configureStore, {history} from './redux';
+import RootView from './components/App/RootView';
+
+// sw для оффлайна и прочих дел
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const store = configureStore();
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+class RootProvider extends React.Component {
+
+  getChildContext() {
+    return {store};
+  }
+
+  componentDidMount() {
+
+    // скрипт инициализации структуры метаданных и модификаторы
+    // import('./metadata')
+    //   .then((module) => module.init(store));
+
+    // подгрузим стили асинхронно
+    // import('metadata-dhtmlx/dhx_terrace.css')
+    //   .then(() => import('metadata-dhtmlx/metadata.css'))
+    //   .then(() => import('./styles/windowbuilder.css'));
+
+  }
+
+  render() {
+    return <Provider store={store}>
+      <RootView history={history} />
+    </Provider>;
+  }
+}
+
+RootProvider.childContextTypes = {
+  store: PropTypes.object,
+};
+
+render(<RootProvider />, document.getElementById('root'));
+
